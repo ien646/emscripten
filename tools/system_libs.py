@@ -147,7 +147,15 @@ def get_wasm_libc_rt_files():
     path_components=['system', 'lib', 'libc'],
     filenames=['emscripten_memcpy.c', 'emscripten_memset.c',
                'emscripten_memmove.c'])
-  return math_files + other_files
+  # Calls to iprintf can be generated during codegen
+  iprintf_files = files_in_path(
+    path_components=['system', 'lib', 'libc', 'musl', 'src', 'stdio'],
+    filenames=['__towrite.c', '__overflow.c', 'fwrite.c', 'fputs.c',
+               'printf.c', 'puts.c'])
+  iprintf_files += files_in_path(
+    path_components=['system', 'lib', 'libc', 'musl', 'src', 'string'],
+    filenames=['strlen.c'])
+  return math_files + other_files + iprintf_files
 
 
 class Library(object):
